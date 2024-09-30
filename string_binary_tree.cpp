@@ -90,6 +90,7 @@ void StringBinaryTree::levelInsert(string & s)
 //----------------------------------------------------------------------------
 
 // given a reference to a node, figure out its index with pointer arithmetic.
+// again, index of root should be 1
 
 int StringBinaryTree::indexOf(string & s)
 {
@@ -193,47 +194,41 @@ int StringBinaryTree::postOrderCountChars()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 
-// FILL IN THIS FUNCTION
-
 // recursively print every string in subtree with root node, followed by a space,
 // according to PRE-ORDER traversal 
 
 void StringBinaryTree::preOrderPrint(string & node)
 {
-  if (isNull(node)) return;  // Base case: if the node is null, stop recursion
+  if (isNull(node)) return;
 
-  // Print the current node
+  // Print current node
   cout << node << " ";
-
-  // Recursively print the left and right children
+  
+  // Recurse on left and right children
   preOrderPrint(leftChild(node));
   preOrderPrint(rightChild(node));
 }
 
 //----------------------------------------------------------------------------
 
-// FILL IN THIS FUNCTION
-
 // recursively print every string in subtree with root node, followed by a space,
 // according to IN-ORDER traversal 
 
 void StringBinaryTree::inOrderPrint(string & node)
 {
-  if (isNull(node)) return;  // Base case: if the node is null, stop recursion
+  if (isNull(node)) return;
 
-  // Recursively print the left child
+  // Recurse on left child
   inOrderPrint(leftChild(node));
-
-  // Print the current node
+  
+  // Print current node
   cout << node << " ";
-
-  // Recursively print the right child
+  
+  // Recurse on right child
   inOrderPrint(rightChild(node));
 }
 
 //----------------------------------------------------------------------------
-
-// FILL IN THIS FUNCTION
 
 // recursively evaluate expression subtree with root node according to POST-ORDER traversal.
 // see lab description for details
@@ -243,7 +238,14 @@ int StringBinaryTree::postOrderEvaluate(string & node)
   if (isNull(node)) return 0;  // Base case: if the node is null, stop recursion
 
   // If the node is a leaf, it's a number (operand), so convert it to an integer
-  if (isLeaf(node)) return stoi(node);
+  if (isLeaf(node)) {
+    try {
+      return stoi(node);  // Attempt to convert string to integer
+    } catch (invalid_argument &) {
+      cout << "ERROR\n";  // Catch invalid number format
+      exit(1);
+    }
+  }
 
   // Recursively evaluate the left and right children
   int leftValue = postOrderEvaluate(leftChild(node));
@@ -272,19 +274,17 @@ int StringBinaryTree::postOrderEvaluate(string & node)
 
 //----------------------------------------------------------------------------
 
-// FILL IN THIS FUNCTION
-
 // sum up lengths of every string in subtree with root node (except NULL elements) 
 
 int StringBinaryTree::postOrderCountChars(string & node)
 {
-  if (isNull(node)) return 0;  // Base case: if the node is null, stop recursion
+  if (isNull(node)) return 0;  // Base case: empty node contributes 0 chars
 
-  // Recursively count characters in the left and right children
+  // Recursively sum characters from left and right children
   int leftCount = postOrderCountChars(leftChild(node));
   int rightCount = postOrderCountChars(rightChild(node));
 
-  // Count the characters in the current node (not including null nodes)
+  // Add the current node's length
   return leftCount + rightCount + node.length();
 }
 
@@ -342,6 +342,3 @@ int main(int argc, char** argv)
   
   return 1;
 }
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
